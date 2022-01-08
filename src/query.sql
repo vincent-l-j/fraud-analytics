@@ -56,3 +56,28 @@ ORDER BY t.amount DESC
 LIMIT 100;
 
 -- If you answered yes to the previous question, explain why you think there might be fraudulent transactions during this time frame.
+
+-- What are the top 5 merchants prone to being hacked using small transactions?
+SELECT m.name as merchant_name, COUNT(*) AS dubious_transaction_count
+FROM card_holder AS ch
+INNER JOIN credit_card AS cc ON ch.id = cc.id_cardholder
+INNER JOIN transaction AS t ON cc.card = t.card
+INNER JOIN merchant as m ON t.id_merchant = m.id
+WHERE t.amount < 2
+GROUP BY m.name
+ORDER BY dubious_transaction_count DESC;
+-- There are 3 merchants which recorded 6 or more transactions of less than $2
+-- Wood-Ramirez recorded 7, while Hood-Phillips and Baker Inc both recorded 6.
+-- After these, there are 12 other merchants which record 5 such transactions:
+-- "Riggs-Adams"
+-- "Reed Group"
+-- "Martinez Group"
+-- "Walker, Deleon and Wolf"
+-- "Greene-Wood"
+-- "Jarvis-Turner"
+-- "Mcdaniel, Hines and Mcfarland"
+-- "Hamilton-Mcfarland"
+-- "Atkinson Ltd"
+-- "Clark and Sons"
+-- "Henderson and Sons"
+-- "Sweeney-Paul"
