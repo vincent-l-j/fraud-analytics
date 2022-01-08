@@ -30,3 +30,29 @@ FROM transaction as t
 WHERE t.amount < 2
 GROUP BY t.card
 ORDER BY avg_days_between_suspicious_tx;
+
+-- Take your investigation a step futher by considering the time period in which potentially fraudulent transactions are made.
+
+-- What are the top 100 highest transactions made between 7:00 am and 9:00 am?
+SELECT *
+FROM transaction AS t
+WHERE CAST(t.date AS TIME) BETWEEN '07:00' and '09:00'
+ORDER BY t.amount DESC
+LIMIT 100;
+
+
+-- Do you see any anomalous transactions that could be fraudulent?
+-- There are only 8 transactions that have amounts greater tahn $500.
+-- While some may be suspect these to be fraudulent, it may be the case that the cardholder was shopping online in these early hours,
+-- or perhaps were in a different time zone to what is recorded in the transaction.
+-- I consider the data here insufficient and the results inconclusive.
+
+-- Is there a higher number of fraudulent transactions made during this time frame versus the rest of the day?
+-- Rest of the day i.e. before 7am and after 9am
+SELECT *
+FROM transaction AS t
+WHERE CAST(t.date AS TIME) < '07:00' or CAST(t.date AS TIME) > '09:00'
+ORDER BY t.amount DESC
+LIMIT 100;
+
+-- If you answered yes to the previous question, explain why you think there might be fraudulent transactions during this time frame.
